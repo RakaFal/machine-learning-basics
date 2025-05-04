@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 # Gantilah dengan nama file dataset
-df = pd.read_csv("/Volumes/DATA 1/UNAIR/SEMESTER 4/Machine Learning (Praktikum)/Imbalanced Data_187231090/stroke.csv")
+df = pd.read_csv("stroke.csv")
 
 # Bersihkan nama kolom dari spasi tersembunyi
 df.columns = df.columns.str.strip()
