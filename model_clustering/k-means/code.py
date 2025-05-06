@@ -19,27 +19,34 @@ df = pd.DataFrame(data)
 print(df)
 
 # 5 - Cek Null Data
+print(df.isnull().sum())
 
 # 6 - Cek Outlier
+kolom_numerik = ['Age', 'Annual Income (k$)', 'Spending Score (1-100)'] 
+z_scores = np.abs(stats.zscore(df[kolom_numerik])) 
 
 # 7 - Tangani Outlier dengan Nilai Mean
+outliers_z = df[(z_scores > 3).any(axis=1)] 
+print("Jumlah outlier berdasarkan Z-score:", len(outliers_z))
+print("Outlier berdasarkan Z-score:\n", outliers_z)
 
 # 8 - Amati Bentuk Visual Masing-Masing Fitur
 plt.style.use('fivethirtyeight')
 plt.figure(1 , figsize = (15 , 6))
 n = 0
-for x in ['Age' , 'Annual Income (k$)' , 'Spending Score (1-100)']:
+for x in ['Age', 'Annual Income (k$)', 'Spending Score (1-100)']:
     n += 1
     plt.subplot(1 , 3 , n)
     plt.subplots_adjust(hspace =0.5 , wspace = 0.5)
     sns.histplot(
-        df[x], kde=True,
+        df[x],
+        kde=True,
         stat="density",
         kde_kws=dict(cut=3),
         bins = 20
         )
     plt.title('Distplot of {}'.format(x))
-    plt.show()
+plt.show()
 
 # 9 - Ploting untuk Mencari Relasi antara Age , Annual Income dan Spending Score
 plt.figure(1 , figsize = (15 , 20))
@@ -51,19 +58,19 @@ for x in ['Age' , 'Annual Income (k$)' , 'Spending Score (1-100)']:
         plt.subplots_adjust(hspace = 0.5 , wspace = 0.5)
         sns.regplot(x = x , y = y , data = df)
         plt.ylabel(y.split()[0]+' '+y.split()[1] if len(y.split()) > 1 else y )
-        plt.show()
+plt.show()
 
 # 10 - Melihat Sebaran Spending Score dan Annual Income pada Gender
 plt.figure(figsize=(10, 6))
 for gender in ["Male", "Female"]:
     subset = df[df["Gender"] == gender]
-plt.scatter(
-    subset["Annual Income (k$)"],
-    subset["Spending Score (1-100)"],
-    s=200,
-    alpha=0.5,
-    label=gender
-    )
+    plt.scatter(
+        subset["Annual Income (k$)"],
+        subset["Spending Score (1-100)"],
+        s=200,
+        alpha=0.5,
+        label=gender
+        )
 plt.xlabel("Annual Income (k$)")
 plt.ylabel("Spending Score (1-100)")
 plt.title("Annual Income vs Spending Score by Gender")
