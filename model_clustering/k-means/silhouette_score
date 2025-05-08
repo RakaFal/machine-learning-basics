@@ -141,3 +141,49 @@ plt.show()
 # 15 - Melihat Nilai Silhouette Score
 score2 = silhouette_score(X1, labels2)
 print("Silhouette Score: ", score2)
+
+
+# Import tools tambahan untuk normalisasi
+from sklearn.preprocessing import StandardScaler
+
+# Menambahkan fitur 'Age' ke dalam clustering
+X2 = df[['Age', 'Annual Income (k$)', 'Spending Score (1-100)']].iloc[: , :].values
+
+# Normalisasi data menggunakan StandardScaler
+scaler = StandardScaler()
+X2_scaled = scaler.fit_transform(X2)
+
+# Menentukan nilai k yang sesuai dengan Elbow-Method untuk data yang dinormalisasi
+inertia_scaled = []
+for n in range(1, 11):
+    algorithm = KMeans(n_clusters=n, init='k-means++', n_init=10, max_iter=300, random_state=111)
+    algorithm.fit(X2_scaled)
+    inertia_scaled.append(algorithm.inertia_)
+
+# Plot bentuk visual elbow untuk data yang dinormalisasi
+plt.figure(1, figsize=(15, 6))
+plt.plot(range(1, 11), inertia_scaled, 'o')
+plt.plot(range(1, 11), inertia_scaled, '-', alpha=0.5)
+plt.xlabel('Number of Clusters'), plt.ylabel('Inertia')
+plt.title('Elbow Method for Scaled Data')
+plt.show()
+
+# Membangun K-Means dengan data yang dinormalisasi
+algorithm_scaled = KMeans(n_clusters=5, init='k-means++', n_init=10, max_iter=300,tol=0.0001, random_state=111, algorithm='elkan')
+algorithm_scaled.fit(X2_scaled)
+labels_scaled = algorithm_scaled.labels_
+centroids_scaled = algorithm_scaled.cluster_centers_
+
+# Menghitung Silhouette Score untuk data yang dinormalisasi dengan fitur tambahan
+score_scaled = silhouette_score(X2_scaled, labels_scaled)
+print("Silhouette Score dengan fitur tambahan dan normalisasi: ", score_scaled)
+
+# Visualisasi clustering dalam 2D (Annual Income vs Spending Score) setelah normalisasi
+plt.figure(1, figsize=(15, 7))
+plt.scatter(x=X2[:, 1], y=X2[:, 2], c=labels_scaled, s=200, cmap='viridis')
+plt.scatter(x=scaler.inverse_transform(centroids_scaled)[:, 1], 
+            y=scaler.inverse_transform(centroids_scaled)[:, 2], 
+            s=300, c='red', alpha=0.5)
+plt.ylabel('Spending Score (1-100)'), plt.xlabel('Annual Income(k$)')
+plt.title('Clustering setelah Normalisasi dengan 3 Fitur')
+plt.show()
