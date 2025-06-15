@@ -26,7 +26,7 @@ df['Umur'] = df['Umur'].astype(int)
 
 # 3.1 Cek Missing Values
 print("CEK MISSING VALUE".center(75, "=") + "\n")
-missing_values = df.isnull().sum()  # Mengecek nilai missing per kolom
+missing_values = df.isnull().sum()
 print(missing_values)
 
 # 3.2 Imputasi Missing Values (Jika ada) - Menggunakan rata-rata untuk kolom numerik
